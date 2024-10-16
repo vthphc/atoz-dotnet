@@ -11,6 +11,9 @@ namespace atoz_dotnet.Entities
         [BsonElement("star")]
         public int Star { get; set; }
         [BsonElement("clearTime")]
+        //add topic string type
+        public string? Topic{ get; set; }
+        [BsonElement("topic")]
         public int ClearTime { get; set; }
     }
 }

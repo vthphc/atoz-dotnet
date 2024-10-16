@@ -102,8 +102,8 @@ namespace atoz_dotnet.Entities
         public string? ProfileImage { get; set; }
 
         [BsonElement("userStage")]
-        [BsonSerializer(typeof(StageSerializer))]
-        public Stage UserStage { get; set; }
+        [BsonSerializer(typeof(StageArraySerializer))]
+        public required Stage[] UserStage { get; set; }
 
         [BsonElement("userType")]
         public string? UserType { get; set; }
@@ -113,4 +113,9 @@ namespace atoz_dotnet.Entities
         [BsonElement("__v")]
         public int __v { get; set; }
     }
+
+    //public class ArrayStage
+    //{
+    //    public Stage[] stages;
+    //}
 }

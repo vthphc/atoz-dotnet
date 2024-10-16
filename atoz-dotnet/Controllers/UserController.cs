@@ -21,5 +21,12 @@ namespace atoz_dotnet.Controllers
         {
             return await users.Find(FilterDefinition<User>.Empty).ToListAsync();
         }
+
+        //get user by id
+        [HttpGet("{id}")]
+        public async Task<User> Get(string id)
+        {
+            return await users.Find<User>(user => user.UserId == id).FirstOrDefaultAsync();
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace atoz_dotnet.Entities
         [BsonId]
         [BsonElement("_id"), BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        [BsonElement("userId"), BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("userId"), BsonRepresentation(BsonType.String)]
         public string? UserId { get; set; }
         [BsonElement("score"), BsonRepresentation(BsonType.Int32)]
         public int Score { get; set; }

@@ -15,9 +15,29 @@ namespace atoz_dotnet.Converter
             var bsonReader = context.Reader;
 
             bsonReader.ReadStartDocument();
-            var id = bsonReader.ReadString("_id");
-            var star = bsonReader.ReadInt32("star");
-            var clearTime = bsonReader.ReadInt32("clearTime");
+            string? id = null;
+            int star = 0;
+            int clearTime = 0;
+
+            while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
+            {
+                var name = bsonReader.ReadName();
+                switch (name)
+                {
+                    case "_id":
+                        id = bsonReader.ReadObjectId().ToString();
+                        break;
+                    case "star":
+                        star = bsonReader.ReadInt32();
+                        break;
+                    case "clearTime":
+                        clearTime = bsonReader.ReadInt32();
+                        break;
+                    default:
+                        bsonReader.SkipValue();
+                        break;
+                }
+            }
             bsonReader.ReadEndDocument();
 
             return new Stage
