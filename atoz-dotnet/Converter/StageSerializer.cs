@@ -25,7 +25,14 @@ namespace atoz_dotnet.Converter
                 switch (name)
                 {
                     case "_id":
-                        id = bsonReader.ReadObjectId().ToString();
+                        if (bsonReader.CurrentBsonType == BsonType.ObjectId)
+                        {
+                            id = bsonReader.ReadObjectId().ToString();
+                        }
+                        else if (bsonReader.CurrentBsonType == BsonType.String)
+                        {
+                            id = bsonReader.ReadString();
+                        }
                         break;
                     case "star":
                         star = bsonReader.ReadInt32();

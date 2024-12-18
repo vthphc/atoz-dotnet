@@ -98,20 +98,25 @@ namespace atoz_dotnet.Controllers
         //add friend
         [HttpPut("addFriend/{userId}/{friendId}")]
         public async Task<IActionResult> AddFriend(string userId, string friendId)
-        { 
-            var user = await users.Find<User>(user => user.UserId == userId).FirstOrDefaultAsync();
-            var friend = await users.Find<User>(user => user.UserId == friendId).FirstOrDefaultAsync();
+        {
+            var user = await users.Find(user => user.UserId == userId).FirstOrDefaultAsync();
+            var friend = await users.Find(user => user.UserId == friendId).FirstOrDefaultAsync();
 
             if (user == null || friend == null)
             {
                 return NotFound();
             }
 
-            user.UserFriends.Append(friendId);
-            friend.UserFriends.Append(userId);
+            var updateUser = Builders<User>.Update.AddToSet(u => u.UserFriends, friendId);
+            var updateFriend = Builders<User>.Update.AddToSet(u => u.UserFriends, userId);
 
-            await users.ReplaceOneAsync(user => user.UserId == userId, user);
-            await users.ReplaceOneAsync(user => user.UserId == friendId, friend);
+            var userResult = await users.UpdateOneAsync(user => user.UserId == userId, updateUser);
+            var friendResult = await users.UpdateOneAsync(user => user.UserId == friendId, updateFriend);
+
+            if (!userResult.IsAcknowledged || !friendResult.IsAcknowledged)
+            {
+                return StatusCode(500, "Failed to update friend lists");
+            }
 
             return NoContent();
         }
@@ -128,9 +133,7 @@ namespace atoz_dotnet.Controllers
                 return NotFound();
             }
 
-            // remove friend from user's friend list
             user.UserFriends = user.UserFriends?.Where(f => f != friendId).ToArray();
-            // remove user from friend's friend list
             friend.UserFriends = friend.UserFriends?.Where(f => f != userId).ToArray();
 
             await users.ReplaceOneAsync(user => user.UserId == userId, user);
